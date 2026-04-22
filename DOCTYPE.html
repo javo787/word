@@ -1,0 +1,607 @@
+﻿<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Нақшаи Тиҷоратӣ — Мошини Тамбурӣ</title>
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Noto+Sans:wght@400;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1A3A5C;
+    --blue: #2874A6;
+    --light: #EBF5FB;
+    --gold: #D4A017;
+    --text: #1a1a2e;
+    --gray: #6b7280;
+    --white: #ffffff;
+  }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 40%, #0d1b2a 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(212,160,23,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(40,116,166,0.12) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* Ornamental pattern */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A017' fill-opacity='0.04'%3E%3Cpath d='M30 0 L35 10 L30 5 L25 10 Z M0 30 L10 35 L5 30 L10 25 Z M60 30 L50 25 L55 30 L50 35 Z M30 60 L25 50 L30 55 L35 50 Z M30 30 m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 20px;
+    max-width: 580px;
+    width: 100%;
+    padding: 48px 44px 44px;
+    box-shadow:
+      0 32px 80px rgba(0,0,0,0.45),
+      0 0 0 1px rgba(212,160,23,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .ornament {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .ornament svg {
+    width: 60px;
+    height: 60px;
+    animation: spin 20s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Noto Serif', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .info-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--light);
+    border-radius: 10px;
+    padding: 12px 16px;
+    border-left: 3px solid var(--blue);
+  }
+
+  .info-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .info-label {
+    font-size: 11px;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .info-value {
+    font-size: 14px;
+    color: var(--navy);
+    font-weight: 700;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px 0;
+    opacity: 0.5;
+  }
+
+  .btn-download {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 18px 32px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 24px rgba(26,58,92,0.4);
+    letter-spacing: 0.3px;
+  }
+
+  .btn-download::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-download:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(26,58,92,0.5); }
+  .btn-download:hover::before { opacity: 1; }
+  .btn-download:active { transform: translateY(0); }
+  .btn-download:disabled { opacity: 0.7; cursor: wait; }
+
+  .btn-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .progress {
+    display: none;
+    text-align: center;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--blue);
+    font-weight: 600;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .success {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 12px;
+    background: #ecfdf5;
+    border-radius: 8px;
+    border: 1px solid #6ee7b7;
+    font-size: 13px;
+    color: #065f46;
+    font-weight: 600;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 20px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="ornament">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="28" stroke="#D4A017" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <circle cx="30" cy="30" r="20" stroke="#1A3A5C" stroke-width="1"/>
+      <path d="M30 10 L33 20 L30 16 L27 20 Z" fill="#D4A017"/>
+      <path d="M30 50 L27 40 L30 44 L33 40 Z" fill="#D4A017"/>
+      <path d="M10 30 L20 27 L16 30 L20 33 Z" fill="#D4A017"/>
+      <path d="M50 30 L40 33 L44 30 L40 27 Z" fill="#D4A017"/>
+      <circle cx="30" cy="30" r="5" fill="#1A3A5C"/>
+      <circle cx="30" cy="30" r="3" fill="#D4A017"/>
+    </svg>
+  </div>
+
+  <div style="text-align:center; margin-bottom: 24px;">
+    <div class="badge">Грантҳои Президент • 2025–2030</div>
+    <h1>Нақшаи Тиҷоратӣ<br>Мошини Тамбурии Автоматӣ</h1>
+    <p class="subtitle">Қарори Ҳукумат №420 аз 28.07.2025<br>Дастгирии соҳибкории занон</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-row">
+      <span class="info-icon">💰</span>
+      <div>
+        <div class="info-label">Маблағи дархостшаванда</div>
+        <div class="info-value">110 000 сомонӣ (ҳадди аксар)</div>
+      </div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">🧵</span>
+      <div>
+        <div class="info-label">Таҷҳизот</div>
+        <div class="info-value">Мошини тамбурии автоматӣ — 9 300 USD</div>
+      </div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">👩‍💼</span>
+      <div>
+        <div class="info-label">Ҷойҳои кории нав</div>
+        <div class="info-value">На камтар аз 7 нафар (занон)</div>
+      </div>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">📄</span>
+      <div>
+        <div class="info-label">Формат</div>
+        <div class="info-value">Microsoft Word (.docx) — забони тоҷикӣ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <button class="btn-download" onclick="generateDocx()" id="btn">
+    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Зеркашии Word (.docx)
+  </button>
+
+  <div class="progress" id="progress">⏳ Файл омода мешавад...</div>
+  <div class="success" id="success">✅ Зеркашӣ оғоз шуд!</div>
+
+  <p class="footer-note">
+    Файл ба забони тоҷикӣ тартиб дода мешавад.<br>
+    Пеш аз пешниҳод насабу ном ва имзои худро илова кунед.
+  </p>
+</div>
+
+<script>
+async function generateDocx() {
+  const btn = document.getElementById('btn');
+  const progress = document.getElementById('progress');
+  const success = document.getElementById('success');
+
+  btn.disabled = true;
+  progress.style.display = 'block';
+  success.style.display = 'none';
+
+  try {
+    const {
+      Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+      AlignmentType, BorderStyle, WidthType, ShadingType, VerticalAlign,
+      LevelFormat, PageBreak, HeadingLevel
+    } = docx;
+
+    const border = { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" };
+    const borders = { top: border, bottom: border, left: border, right: border };
+    const hBorder = { style: BorderStyle.SINGLE, size: 1, color: "1A5276" };
+    const hBorders = { top: hBorder, bottom: hBorder, left: hBorder, right: hBorder };
+
+    const TF = "Times New Roman";
+
+    function h1(text) {
+      return new Paragraph({ spacing: { before: 280, after: 100 },
+        children: [new TextRun({ text, bold: true, size: 28, color: "1A5276", font: TF })] });
+    }
+    function h2(text) {
+      return new Paragraph({ spacing: { before: 180, after: 80 },
+        children: [new TextRun({ text, bold: true, size: 24, color: "2874A6", font: TF })] });
+    }
+    function p(text, opts = {}) {
+      return new Paragraph({ spacing: { before: 60, after: 60 },
+        alignment: opts.center ? AlignmentType.CENTER : AlignmentType.JUSTIFIED,
+        children: [new TextRun({ text, size: 24, bold: opts.bold || false, italics: opts.italics || false, font: TF, color: opts.color || "000000" })] });
+    }
+    function bl(text) {
+      return new Paragraph({ numbering: { reference: "bullets", level: 0 }, spacing: { before: 40, after: 40 },
+        children: [new TextRun({ text, size: 24, font: TF })] });
+    }
+    function divider() {
+      return new Paragraph({ border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "1A5276", space: 1 } },
+        spacing: { before: 100, after: 100 }, children: [] });
+    }
+    function sp() { return new Paragraph({ spacing: { before: 80, after: 0 }, children: [] }); }
+
+    function tRow(cells, isHeader = false) {
+      return new TableRow({ tableHeader: isHeader, children: cells.map((cell, i) =>
+        new TableCell({
+          borders: isHeader ? hBorders : borders,
+          width: { size: cell.w, type: WidthType.DXA },
+          shading: isHeader ? { fill: "1A5276", type: ShadingType.CLEAR }
+            : (i === 0 ? { fill: "EBF5FB", type: ShadingType.CLEAR } : { fill: "FFFFFF", type: ShadingType.CLEAR }),
+          margins: { top: 80, bottom: 80, left: 120, right: 120 },
+          verticalAlign: VerticalAlign.CENTER,
+          children: [new Paragraph({ alignment: cell.center ? AlignmentType.CENTER : AlignmentType.LEFT,
+            children: [new TextRun({ text: cell.t, size: 22, bold: isHeader || cell.bold || false, font: TF, color: isHeader ? "FFFFFF" : "000000" })] })]
+        })
+      )});
+    }
+
+    function infoRow(label, value) {
+      return new TableRow({ children: [
+        new TableCell({ borders, width: { size: 3500, type: WidthType.DXA },
+          shading: { fill: "D6EAF8", type: ShadingType.CLEAR },
+          margins: { top: 80, bottom: 80, left: 120, right: 120 },
+          children: [new Paragraph({ children: [new TextRun({ text: label, bold: true, size: 22, font: TF })] })] }),
+        new TableCell({ borders, width: { size: 5526, type: WidthType.DXA },
+          margins: { top: 80, bottom: 80, left: 120, right: 120 },
+          children: [new Paragraph({ children: [new TextRun({ text: value, size: 22, font: TF })] })] })
+      ]});
+    }
+
+    const doc = new Document({
+      numbering: { config: [{ reference: "bullets", levels: [{ level: 0, format: LevelFormat.BULLET, text: "-",
+        alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] }] },
+      styles: {
+        default: { document: { run: { font: TF, size: 24 } } },
+        paragraphStyles: [
+          { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
+            run: { size: 28, bold: true, font: TF, color: "1A5276" }, paragraph: { spacing: { before: 280, after: 100 }, outlineLevel: 0 } },
+          { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
+            run: { size: 24, bold: true, font: TF, color: "2874A6" }, paragraph: { spacing: { before: 180, after: 80 }, outlineLevel: 1 } }
+        ]
+      },
+      sections: [{ properties: { page: {
+          size: { width: 11906, height: 16838 },
+          margin: { top: 1440, right: 1440, bottom: 1440, left: 1800 }
+        }},
+        children: [
+          // САҲИФАИ АВВАЛ
+          sp(), sp(), sp(),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 0, after: 80 },
+            children: [new TextRun({ text: "НАҚШАИ ТИҶОРАТӢ", size: 52, bold: true, font: TF, color: "1A5276" })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 60, after: 60 },
+            children: [new TextRun({ text: "барои иштирок дар озмуни", size: 26, font: TF, color: "2874A6" })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 40, after: 40 },
+            children: [new TextRun({ text: "ГРАНТҲОИ ПРЕЗИДЕНТИ ҶУМҲУРИИ ТОҶИКИСТОН", size: 28, bold: true, font: TF, color: "1A5276" })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 40, after: 40 },
+            children: [new TextRun({ text: "ҷиҳати дастгирӣ ва рушди фаъолияти соҳибкории занон", size: 26, font: TF, color: "2874A6" })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 40, after: 60 },
+            children: [new TextRun({ text: "(Барномаи солҳои 2025–2030, Қарори №420 аз 28.07.2025)", size: 22, font: TF, color: "666666", italics: true })] }),
+          divider(),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 120, after: 60 },
+            children: [new TextRun({ text: "«Кушодани устохонаи дӯзандагӣ ва гулдӯзӣ дар асоси", size: 30, bold: true, font: TF, color: "1A5276" })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 40, after: 120 },
+            children: [new TextRun({ text: "мошини тамбурии автоматӣ»", size: 30, bold: true, font: TF, color: "1A5276" })] }),
+          sp(), sp(),
+          new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [3500, 5526], rows: [
+            infoRow("Дархосткунанда:", "[Насабу ном, исми падар]"),
+            infoRow("Намуди фаъолият:", "Дӯзандагӣ ва гулдӯзии тамбурии миллӣ"),
+            infoRow("Маблағи дархостшаванда:", "110 000 сомонӣ (ҳадди аксар)"),
+            infoRow("Нархи таҷҳизот:", "9 300 доллари ИМА (мошини тамбурии автоматӣ)"),
+            infoRow("Ҷойҳои кории нав:", "На камтар аз 7 ҷой (барои занон)"),
+            infoRow("Санаи тартибдиҳӣ:", "Апрели соли 2026"),
+          ]}),
+
+          new Paragraph({ children: [new PageBreak()] }),
+
+          // БАХШИ 1
+          h1("1. ХУЛОСАИ ЛОИҲА"),
+          divider(),
+          p("Нақшаи тиҷоратии мазкур дар доираи озмуни грантҳои Президенти Ҷумҳурии Тоҷикистон ҷиҳати дастгирӣ ва рушди фаъолияти соҳибкории занон барои солҳои 2025–2030 (Қарори Ҳукумати Ҷумҳурии Тоҷикистон №420 аз 28 июли соли 2025) тартиб дода шудааст."),
+          p("Мақсади лоиҳа — кушодани устохонаи муосири дӯзандагӣ ва гулдӯзии тамбурӣ тавассути харидории мошини тамбурии автоматии касбӣ ба маблағи 9 300 доллари ИМА мебошад. Гулдӯзии тамбурӣ (чакандӯзӣ) яке аз ҳунарҳои халқии анъанавии тоҷик буда, пурра ба авлавиятҳои барномаи грантӣ мувофиқат мекунад."),
+          p("Лоиҳа таъсиси на камтар аз 7 ҷойи кории доимиро барои занон таъмин менамояд. Мӯҳлати барқарорсозии сармоягузорӣ — 18–24 моҳ."),
+          sp(),
+
+          // БАХШИ 2
+          h1("2. ТАВСИФИ ЛОИҲА"),
+          divider(),
+          h2("2.1. Моҳияти лоиҳа"),
+          p("Лоиҳа ташкили корхонаи хурди истеҳсолиро бо истеҳсоли маҳсулоти гулдӯзии тамбурӣ — чакан, либоси миллӣ, дастархон, болишти ороишӣ ва хидматрасонии фармоишии гулдӯзиро пешбинӣ менамояд. Дороии асосии истеҳсол — мошини тамбурии автоматии касбии бисёрсӯзана мебошад."),
+          h2("2.2. Маҳсулот ва хидматҳо"),
+          bl("Дӯхту гулдӯзии либоси миллӣ (чакан, куртаи занона, болопӯш)"),
+          bl("Гулдӯзии фармоишӣ барои аҳолӣ, ташкилотҳо, меҳмонхонаҳо, тарабхонаҳо"),
+          bl("Истеҳсоли молҳои ёдгорӣ ва тӯҳфаҳои миллӣ бо нақшу нигорҳои тоҷикӣ"),
+          bl("Иҷрои фармоишҳои корпоративӣ (гулдӯзии нишонвораи ширкатҳо ба либоси кор)"),
+          bl("Таълими занону духтарони ҷавон дар санъати гулдӯзии тамбурӣ"),
+          sp(),
+          h2("2.3. Мувофиқат ба меъёрҳои барномаи грантӣ"),
+          new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [4000, 5026], rows: [
+            tRow([{ t: "Меъёрҳои барнома", w: 4000 }, { t: "Мувофиқати лоиҳа", w: 5026 }], true),
+            tRow([{ t: "Рушди ҳунарҳои мардумӣ", w: 4000 }, { t: "Гулдӯзии тамбурӣ — ҳунари халқии анъанавии тоҷик", w: 5026 }]),
+            tRow([{ t: "Шуғлнокии занон", w: 4000 }, { t: "На камтар аз 7 ҷойи кории доимӣ", w: 5026 }]),
+            tRow([{ t: "Инноватсионият", w: 4000 }, { t: "Автоматикунонии ҳунари анъанавӣ", w: 5026 }]),
+            tRow([{ t: "Аҳамияти иҷтимоӣ", w: 4000 }, { t: "Ҷалби модарони сершумори фарзанд", w: 5026 }]),
+            tRow([{ t: "Самти экологӣ", w: 4000 }, { t: "Истифодаи матоъ ва ришҳои табиӣ", w: 5026 }]),
+          ]}),
+          sp(),
+
+          // БАХШИ 3
+          h1("3. ТАВСИФИ ТАҶҲИЗОТ"),
+          divider(),
+          h2("3.1. Мошини тамбурии автоматӣ"),
+          p("Маблағи асосии грант — харидории мошини тамбурии автоматии касбӣ. Мутобиқи банди 27 Қоидаҳо, маблағи грант харидории таҷҳизот ва ашёи хомро дар бар мегирад."),
+          new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [4000, 5026], rows: [
+            tRow([{ t: "Нишондиҳанда", w: 4000 }, { t: "Хусусиятҳо", w: 5026 }], true),
+            tRow([{ t: "Намуди таҷҳизот", w: 4000 }, { t: "Мошини тамбурии автоматии касбӣ", w: 5026 }]),
+            tRow([{ t: "Нарх", w: 4000 }, { t: "9 300 USD (≈ 101 000 сомонӣ)", w: 5026 }]),
+            tRow([{ t: "Самаранокӣ", w: 4000 }, { t: "То 500–800 дӯхт дар як дақиқа", w: 5026 }]),
+            tRow([{ t: "Майдони гулдӯзӣ", w: 4000 }, { t: "То 400×500 мм ва бештар", w: 5026 }]),
+            tRow([{ t: "Идоракунӣ", w: 4000 }, { t: "Идоракунии компютерии ЧПУ", w: 5026 }]),
+            tRow([{ t: "Кафолат", w: 4000 }, { t: "12 моҳ, хизматрасонии техникӣ", w: 5026 }]),
+          ]}),
+          sp(),
+
+          // БАХШИ 4
+          h1("4. ТАҲЛИЛИ БОЗОР"),
+          divider(),
+          h2("4.1. Тавсифи бозор"),
+          p("Бозори гулдӯзӣ ва дӯзандагии миллӣ дар Тоҷикистон афзоиши устуворро нишон медиҳад:"),
+          bl("Ҷараёни рӯзафзуни туристон ва талабот ба сувенирҳо ва либоси миллӣ"),
+          bl("Барқарории таваҷҷӯҳ ба ҳунарҳои анъанавии тоҷикӣ"),
+          bl("Зиёдшавии фармоишҳои корпоративӣ аз тарабхонаҳо ва меҳмонхонаҳо"),
+          bl("Талабот аз сӯи диаспора тавассути платформаҳои интернетӣ"),
+          bl("Сиёсати давлатӣ оид ба дастгирии ҳунарҳои мардумӣ"),
+          sp(),
+          h2("4.2. Бартариҳои рақобатӣ"),
+          bl("Самаранокии баланд — 20–30 маротиба зудтар аз дастӣ"),
+          bl("Дақиқӣ ва сифати баланди гулдӯзӣ"),
+          bl("Имкони иҷрои фармоишҳои инфиродии ҳар гуна мураккабӣ"),
+          bl("Нархгузории мувофиқ тавассути пасткунии арзиши истеҳсол"),
+          sp(),
+
+          // БАХШИ 5
+          h1("5. НАҚШАИ МОЛИЯВӢ"),
+          divider(),
+          h2("5.1. Буҷети хароҷоти грант"),
+          new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [1000, 4526, 1800, 1700], rows: [
+            tRow([{ t: "№", w: 1000, center: true }, { t: "Номгӯи хароҷотҳо", w: 4526 }, { t: "Сомонӣ", w: 1800, center: true }, { t: "USD", w: 1700, center: true }], true),
+            tRow([{ t: "1", w: 1000, center: true }, { t: "Мошини тамбурии автоматӣ", w: 4526 }, { t: "≈ 101 000", w: 1800, center: true }, { t: "9 300", w: 1700, center: true }]),
+            tRow([{ t: "2", w: 1000, center: true }, { t: "Ашёи хом: риш, матоъ, маводи истеъмолӣ", w: 4526 }, { t: "6 000", w: 1800, center: true }, { t: "≈ 550", w: 1700, center: true }]),
+            tRow([{ t: "3", w: 1000, center: true }, { t: "Дигар хароҷотҳои истеҳсолӣ", w: 4526 }, { t: "3 000", w: 1800, center: true }, { t: "≈ 275", w: 1700, center: true }]),
+            tRow([{ t: "", w: 1000 }, { t: "ҶАМЪ (маблағи дархостшаванда)", w: 4526, bold: true }, { t: "110 000", w: 1800, center: true }, { t: "≈ 10 125", w: 1700, center: true }]),
+          ]}),
+          p("* Мутобиқи банди 19 Қоидаҳо, на камтар аз 10% хароҷот аз ҳисоби дархосткунанда пардохт мешавад.", { italics: true, color: "555555" }),
+          sp(),
+          h2("5.2. Пешбинии даромад"),
+          new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [3026, 2000, 2000, 2000], rows: [
+            tRow([{ t: "Нишондиҳанда", w: 3026 }, { t: "Соли 1", w: 2000, center: true }, { t: "Соли 2", w: 2000, center: true }, { t: "Соли 3", w: 2000, center: true }], true),
+            tRow([{ t: "Фармоишҳо дар як моҳ", w: 3026 }, { t: "15–20", w: 2000, center: true }, { t: "25–35", w: 2000, center: true }, { t: "40–55", w: 2000, center: true }]),
+            tRow([{ t: "Миёнаи як фармоиш (сомонӣ)", w: 3026 }, { t: "500–800", w: 2000, center: true }, { t: "600–900", w: 2000, center: true }, { t: "700–1000", w: 2000, center: true }]),
+            tRow([{ t: "Даромади умумии солона", w: 3026 }, { t: "90–120 ҳаз.", w: 2000, center: true }, { t: "130–160 ҳаз.", w: 2000, center: true }, { t: "180–220 ҳаз.", w: 2000, center: true }]),
+            tRow([{ t: "Хароҷотҳои амалиётӣ", w: 3026 }, { t: "55–70 ҳаз.", w: 2000, center: true }, { t: "70–90 ҳаз.", w: 2000, center: true }, { t: "90–110 ҳаз.", w: 2000, center: true }]),
+            tRow([{ t: "Фоидаи холис (сомонӣ)", w: 3026 }, { t: "35–50 ҳаз.", w: 2000, center: true }, { t: "60–70 ҳаз.", w: 2000, center: true }, { t: "90–110 ҳаз.", w: 2000, center: true }]),
+          ]}),
+          p("Мӯҳлати барқарорсозии сармоягузорӣ: 18–24 моҳ.", { bold: true }),
+          sp(),
+
+          // БАХШИ 6
+          h1("6. ШУҒЛНОКӢ ВА ТАЪСИРИ ИҶТИМОӢ"),
+          divider(),
+          p("Мутобиқи банди 17 Қоидаҳо, барои гранти 110 000 сомонӣ — таъмини ҳадди ақал 7 ҷойи кории доимӣ ҳатмӣ аст:"),
+          new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [3000, 1800, 4226], rows: [
+            tRow([{ t: "Вазифа", w: 3000 }, { t: "Шумора", w: 1800, center: true }, { t: "Категория", w: 4226 }], true),
+            tRow([{ t: "Роҳбар / устои гулдӯзӣ", w: 3000 }, { t: "1", w: 1800, center: true }, { t: "Дархосткунанда", w: 4226 }]),
+            tRow([{ t: "Оператори мошини гулдӯзӣ", w: 3000 }, { t: "2", w: 1800, center: true }, { t: "Занони 20–35-сола", w: 4226 }]),
+            tRow([{ t: "Дӯзанда-бурандоз", w: 3000 }, { t: "2", w: 1800, center: true }, { t: "Модарони сершумори фарзанд", w: 4226 }]),
+            tRow([{ t: "Мудири фурӯш ва фармоишҳо", w: 3000 }, { t: "1", w: 1800, center: true }, { t: "Занони ҷавон", w: 4226 }]),
+            tRow([{ t: "Шогирд / таҷрибаомӯз", w: 3000 }, { t: "1", w: 1800, center: true }, { t: "Қишрҳои осебпазир", w: 4226 }]),
+            tRow([{ t: "ҶАМЪ", w: 3000, bold: true }, { t: "7", w: 1800, center: true }, { t: "Ҳама — занон", w: 4226 }]),
+          ]}),
+          sp(),
+
+          // БАХШИ 7
+          h1("7. НАҚШАИ ТАТБИҚИ ЛОИҲА"),
+          divider(),
+          new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [1400, 5126, 2500], rows: [
+            tRow([{ t: "Моҳ", w: 1400, center: true }, { t: "Чорабинӣ", w: 5126 }, { t: "Шахси масъул", w: 2500 }], true),
+            tRow([{ t: "1–2", w: 1400, center: true }, { t: "Бақайдгирии шахси воқеӣ, кушодани ҳисоби бонкӣ", w: 5126 }, { t: "Дархосткунанда", w: 2500 }]),
+            tRow([{ t: "2–3", w: 1400, center: true }, { t: "Иҷора / омодасозии ҷойи корӣ", w: 5126 }, { t: "Дархосткунанда", w: 2500 }]),
+            tRow([{ t: "3–4", w: 1400, center: true }, { t: "Харидорӣ ва расонидани мошини тамбурӣ (9 300 USD)", w: 5126 }, { t: "Таъминкунанда", w: 2500 }]),
+            tRow([{ t: "4", w: 1400, center: true }, { t: "Насб, танзим ва озмоиши таҷҳизот", w: 5126 }, { t: "Мутахассиси техникӣ", w: 2500 }]),
+            tRow([{ t: "4–5", w: 1400, center: true }, { t: "Қабул ва таълими кормандон (7 нафар)", w: 5126 }, { t: "Дархосткунанда", w: 2500 }]),
+            tRow([{ t: "5", w: 1400, center: true }, { t: "Харидории ашёи хом (риш, матоъ, маводи истеъмолӣ)", w: 5126 }, { t: "Дархосткунанда", w: 2500 }]),
+            tRow([{ t: "5–6", w: 1400, center: true }, { t: "Оғози истеҳсол, ташкили пойгоҳи муштариён", w: 5126 }, { t: "Коллектив", w: 2500 }]),
+            tRow([{ t: "6+", w: 1400, center: true }, { t: "Оғози истеҳсол ва фурӯши пурраи маҳсулот", w: 5126 }, { t: "Коллектив", w: 2500 }]),
+          ]}),
+          sp(),
+
+          // БАХШИ 8
+          h1("8. НАЗОРАТ ВА ҲИСОБОТДИҲӢ"),
+          divider(),
+          p("Дархосткунанда мутобиқи Қоидаҳои тасдиқшуда (банди 36–42) уҳдадориҳои зеринро ба зимма мегирад:"),
+          bl("Дар давоми ду соли пас аз дарёфти грант ба Кумита маълумот пешниҳод намуда, ҳисобот орад"),
+          bl("Бехатарӣ ва истифодаи мақсаднокро аз таҷҳизот ҳадди ақал 2 сол таъмин намояд"),
+          bl("Намояндагони гурӯҳи мониторингиро ба санҷишҳои нақшавӣ ва ғайринақшавӣ қабул кунад"),
+          bl("Маблағи грантро ба харидории таҷҳизот ва ашёи хом сарф намояд"),
+          sp(),
+
+          // БАХШИ 9
+          h1("9. ХУЛОСА"),
+          divider(),
+          p("Лоиҳаи мазкур ташаббуси иқтисодан асосноккунонидашудаи иҷтимоии рушди ҳунари анъанавии тоҷикӣ — гулдӯзии тамбурӣ — дар асоси технологияҳои муосир мебошад."),
+          p("Харидории мошини тамбурии автоматӣ ба маблағи 9 300 USD ташкили корхонаи хурди рақобатпазирро имкон медиҳад, шуғли доимии на камтар аз 7 занро таъмин мекунад ва ба нигоҳдошти мероси фарҳангии кишвар ҳисса мегузорад. Лоиҳа ба ҳамаи ҳадафҳо ва меъёрҳои Барномаи грантҳои Президенти Ҷумҳурии Тоҷикистон барои солҳои 2025–2030 мувофиқат мекунад."),
+          divider(),
+          sp(),
+          p("Дархосткунанда: ___________________________  /________________/"),
+          p("Санаи тартибдиҳӣ: «_____» _________________ соли 2026"),
+          p("РМА: _______________________________"),
+          sp(),
+          p("Суроға: шаҳри Душанбе, хиёбони Лоҳутӣ 14, Кумитаи кор бо занон ва оилаи назди Ҳукумати ҶТ"),
+          p("Сомона: www.comwom.tj  |  Телефон: (+992 37) 221-34-71"),
+        ]
+      }]
+    });
+
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Naqshai_Tijoratiyi_Tambur_2026.docx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    progress.style.display = 'none';
+    success.style.display = 'flex';
+    btn.disabled = false;
+
+  } catch (err) {
+    progress.style.display = 'none';
+    alert('Хато: ' + err.message);
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
+
