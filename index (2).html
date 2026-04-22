@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Сехи Дӯзандагӣ — Нақшаи Тиҷоратӣ</title>
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:linear-gradient(160deg,#0a1628,#1a3a5c,#0d2137);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:16px;padding:36px 30px;max-width:500px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.top{text-align:center;margin-bottom:24px}
+.badge{display:inline-block;background:linear-gradient(135deg,#1A3A5C,#2874A6);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:12px}
+h1{font-size:21px;color:#1A3A5C;line-height:1.3;margin-bottom:6px}
+.sub{font-size:12px;color:#888;line-height:1.6}
+.rows{display:grid;gap:8px;margin:20px 0}
+.row{display:flex;gap:10px;align-items:center;background:#EBF5FB;border-radius:9px;padding:10px 13px;border-left:3px solid #2874A6}
+.lbl{font-size:10px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.val{font-size:13px;color:#1A3A5C;font-weight:700}
+.sep{height:1px;background:linear-gradient(90deg,transparent,#D4A017,transparent);opacity:.4;margin:18px 0}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:linear-gradient(135deg,#1A3A5C,#2874A6);color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(26,58,92,.4);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.6;cursor:wait}
+#msg{text-align:center;margin-top:12px;font-size:13px;min-height:20px}
+.note{text-align:center;font-size:11px;color:#aaa;margin-top:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top">
+    <div style="font-size:32px;margin-bottom:8px">🇹🇯</div>
+    <div class="badge">Грантҳои Президент • 2025–2030</div>
+    <h1>Нақшаи Тиҷоратӣ<br>«Сехи Дӯзандагӣ»</h1>
+    <p class="sub">Қарори Ҳукумат №420 аз 28.07.2025</p>
+  </div>
+  <div class="rows">
+    <div class="row"><div><div class="lbl">Лоиҳа</div><div class="val">Сехи дӯзандагӣ ва либоси миллии тоҷикӣ</div></div></div>
+    <div class="row"><div><div class="lbl">Макон</div><div class="val">Б. Ғафуров, кӯчаи Мадания 44</div></div></div>
+    <div class="row"><div><div class="lbl">Маблағи дархостшаванда</div><div class="val">110 000 сомонӣ | Саҳми соҳибкор: 20 000</div></div></div>
+    <div class="row"><div><div class="lbl">Ҷойҳои кории нав</div><div class="val">7 нафар (занон, аз ҷумла маъюбон)</div></div></div>
+  </div>
+  <div class="sep"></div>
+  <button class="btn" onclick="go()" id="btn">⬇ &nbsp;Зеркашии Word (.docx)</button>
+  <div id="msg"></div>
+  <p class="note">Пеш аз пешниҳод насабу ном ва РМА илова кунед.</p>
+</div>
+
+<script>
+async function go(){
+  const btn=document.getElementById('btn'),msg=document.getElementById('msg');
+  btn.disabled=true; msg.style.color='#2874A6'; msg.textContent='⏳ Омода мешавад...';
+  try{
+    const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
+      AlignmentType,BorderStyle,WidthType,ShadingType,VerticalAlign,LevelFormat,PageBreak}=docx;
+    const F="Times New Roman";
+    const brd={style:BorderStyle.SINGLE,size:1,color:"CCCCCC"};
+    const Bs={top:brd,bottom:brd,left:brd,right:brd};
+    const Bh={style:BorderStyle.SINGLE,size:1,color:"1A5276"};
+    const Bhs={top:Bh,bottom:Bh,left:Bh,right:Bh};
+
+    const H1=t=>new Paragraph({spacing:{before:300,after:120},children:[new TextRun({text:t,bold:true,size:28,color:"1A5276",font:F})]});
+    const H2=t=>new Paragraph({spacing:{before:200,after:80},children:[new TextRun({text:t,bold:true,size:25,color:"154360",font:F})]});
+    const P=(t,o={})=>new Paragraph({spacing:{before:60,after:60},alignment:o.c?AlignmentType.CENTER:AlignmentType.JUSTIFIED,children:[new TextRun({text:t,size:24,bold:o.b||false,italics:o.i||false,font:F,color:o.cl||"000000"})]});
+    const BL=t=>new Paragraph({numbering:{reference:"b",level:0},spacing:{before:40,after:40},children:[new TextRun({text:t,size:24,font:F})]});
+    const DV=()=>new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:8,color:"1A5276",space:1}},spacing:{before:120,after:120},children:[]});
+    const SP=()=>new Paragraph({spacing:{before:80,after:0},children:[]});
+    const PB=()=>new Paragraph({children:[new PageBreak()]});
+
+    const TR=(cs,h=false)=>new TableRow({tableHeader:h,children:cs.map((c,i)=>new TableCell({
+      borders:h?Bhs:Bs,width:{size:c.w,type:WidthType.DXA},
+      shading:h?{fill:"1A5276",type:ShadingType.CLEAR}:(i===0?{fill:"EBF5FB",type:ShadingType.CLEAR}:{fill:"FFFFFF",type:ShadingType.CLEAR}),
+      margins:{top:80,bottom:80,left:120,right:120},verticalAlign:VerticalAlign.CENTER,
+      children:[new Paragraph({alignment:c.ct?AlignmentType.CENTER:AlignmentType.LEFT,
+        children:[new TextRun({text:c.t,size:22,bold:h||c.b||false,font:F,color:h?"FFFFFF":"000000"})]})]}))});
+    const IR=(l,v)=>TR([{t:l,w:3600,b:true},{t:v,w:5426}]);
+
+    const doc=new Document({
+      numbering:{config:[{reference:"b",levels:[{level:0,format:LevelFormat.BULLET,text:"–",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}]},
+      styles:{default:{document:{run:{font:F,size:24}}},paragraphStyles:[
+        {id:"Heading1",name:"Heading 1",basedOn:"Normal",next:"Normal",quickFormat:true,run:{size:28,bold:true,font:F,color:"1A5276"},paragraph:{spacing:{before:300,after:120},outlineLevel:0}},
+        {id:"Heading2",name:"Heading 2",basedOn:"Normal",next:"Normal",quickFormat:true,run:{size:25,bold:true,font:F,color:"154360"},paragraph:{spacing:{before:200,after:80},outlineLevel:1}}
+      ]},
+      sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1440,right:1440,bottom:1440,left:1800}}},
+      children:[
+        SP(),SP(),SP(),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},children:[new TextRun({text:"ҶУМҲУРИИ ТОҶИКИСТОН",size:24,bold:true,font:F,color:"444444"})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:10,after:10},children:[new TextRun({text:"Кумитаи кор бо занон ва оилаи назди Ҳукумати Ҷумҳурии Тоҷикистон",size:22,font:F,color:"555555",italics:true})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:10,after:50},children:[new TextRun({text:"Озмуни грантҳои Президент барои солҳои 2025–2030",size:22,font:F,color:"555555",italics:true})]}),
+        DV(),SP(),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:60,after:30},children:[new TextRun({text:"НАҚШАИ ТИҶОРАТӢ",size:56,bold:true,font:F,color:"1A5276"})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:20,after:20},children:[new TextRun({text:"«Сехи дӯзандагӣ ва истеҳсоли либоси миллии тоҷикӣ»",size:30,bold:true,font:F,color:"154360"})]}),
+        SP(),SP(),
+        new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[3600,5426],rows:[
+          IR("Дархосткунанда:","[Насабу ном, исми падар]"),
+          IR("Макони фаъолият:","ш. Бободжон Ғафуров, кӯчаи Мадания 44"),
+          IR("Намуди фаъолият:","Дӯзандагӣ ва истеҳсоли либоси миллӣ"),
+          IR("Маблағи дархостшаванда:","110 000 сомонӣ"),
+          IR("Саҳми соҳибкор:","20 000 сомонӣ (таҷҳизот + бино)"),
+          IR("Буҷети умумии лоиҳа:","130 000 сомонӣ"),
+          IR("Ҷойҳои кории нав:","На камтар аз 7 нафар (занон)"),
+          IR("Мӯҳлати амалигардонӣ:","36 моҳ (3 сол)"),
+          IR("Санаи тартибдиҳӣ:","Апрели соли 2026"),
+        ]}),
+        SP(),SP(),P("Имзо: _______________________   Сана: «____» __________ 2026"),
+        PB(),
+
+        H1("1. МАЪЛУМОТИ УМУМӢ"),DV(),
+        H2("1.1. Номи лоиҳа"),
+        P("«Кушодани сехи дӯзандагӣ ва истеҳсоли либоси миллии тоҷикӣ дар асоси харидории мошини юрмадӯзии автоматикӣ»"),SP(),
+        H2("1.2. Тавсиф ва асосноккунӣ"),
+        P("Лоиҳа ташкили корхонаи хурди истеҳсолиро дар ш. Бободжон Ғафуров пешбинӣ менамояд. Дар сех либоси миллии тоҷикӣ — атлас, адрас, чакан, либоси бозорӣ, куртаҳои миллӣ ва костюмҳои юрмадӯзӣ истеҳсол карда мешавад. Маҳсулот мизоҷи доимӣ дорад: соҳибкорони бозор шартнома доранд ва маҳсулоти тайёрро якҷоят фурӯхта метавонанд."),SP(),
+        H2("1.3. Мақсад ва вазифаҳо"),
+        P("Мақсади асосӣ: ба кори доимӣ машғул будани занони маъюб ва ҳонашин ва пеш бурдани ҳунарҳои мардумии миллати Тоҷик."),
+        BL("Истеҳсоли атлас, адрас, чакан, либоси бозорӣ, куртаҳои миллӣ ва костюмҳои юрмадӯзӣ"),
+        BL("Ба кор таъмин намудани занони маъюб ва хонашин"),
+        BL("Таъмини фурӯши доимӣ тавассути шартномаҳо бо соҳибкорони бозор"),
+        BL("Рушди ҳунарҳои мардумӣ ва нигоҳдории анъанаҳои миллии тоҷикӣ"),
+        SP(),PB(),
+
+        H1("2. МАҲСУЛОТ ВА БОЗОР"),DV(),
+        new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[500,3826,2300,2400],rows:[
+          TR([{t:"№",w:500,ct:true},{t:"Намуди маҳсулот",w:3826},{t:"Нарх",w:2300,ct:true},{t:"Талабот",w:2400,ct:true}],true),
+          TR([{t:"1",w:500,ct:true},{t:"Либоси атлас ва адрас",w:3826},{t:"150–350 сом.",w:2300,ct:true},{t:"Баланд",w:2400,ct:true}]),
+          TR([{t:"2",w:500,ct:true},{t:"Чакан (гулдӯзӣ)",w:3826},{t:"200–600 сом.",w:2300,ct:true},{t:"Баланд",w:2400,ct:true}]),
+          TR([{t:"3",w:500,ct:true},{t:"Куртаҳои миллии занона/мардона",w:3826},{t:"120–280 сом.",w:2300,ct:true},{t:"Миёна",w:2400,ct:true}]),
+          TR([{t:"4",w:500,ct:true},{t:"Костюмҳои юрмадӯзӣ",w:3826},{t:"300–700 сом.",w:2300,ct:true},{t:"Баланд",w:2400,ct:true}]),
+          TR([{t:"5",w:500,ct:true},{t:"Либоси бозорӣ ва дӯхти фармоишӣ",w:3826},{t:"50–200 сом.",w:2300,ct:true},{t:"Баланд",w:2400,ct:true}]),
+        ]}),SP(),
+        BL("Соҳибкорони бозор — шартномаҳои дарозмуддат"),
+        BL("Аҳолии маҳал: тӯйҳо, Наврӯз ва маросимҳои дигар"),
+        BL("Тӯйхонаҳо, маросимхонаҳо ва созмонҳои давлатӣ"),
+        BL("Фурӯши онлайн тавассути шабакаҳои иҷтимоӣ"),
+        SP(),
+
+        H1("3. НАҚШАИ МОЛИЯВӢ"),DV(),
+        H2("3.1. Буҷети лоиҳа"),
+        new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[500,4100,2200,2226],rows:[
+          TR([{t:"№",w:500,ct:true},{t:"Номгӯи хароҷотҳо",w:4100},{t:"Маблағи пурсидашуда",w:2200,ct:true},{t:"Саҳми соҳибкор",w:2226,ct:true}],true),
+          TR([{t:"1",w:500,ct:true},{t:"Мошини юрмадӯзии автоматикӣ (9 300 USD)",w:4100},{t:"101 000 сом.",w:2200,ct:true},{t:"—",w:2226,ct:true}]),
+          TR([{t:"2",w:500,ct:true},{t:"Мошини дарӯзӣ (2 дона × 800 сом.)",w:4100},{t:"—",w:2200,ct:true},{t:"1 600 сом.",w:2226,ct:true}]),
+          TR([{t:"3",w:500,ct:true},{t:"Мошини аверлок",w:4100},{t:"—",w:2200,ct:true},{t:"4 500 сом.",w:2226,ct:true}]),
+          TR([{t:"4",w:500,ct:true},{t:"Стол ва чизҳои ёрирасон",w:4100},{t:"—",w:2200,ct:true},{t:"2 000 сом.",w:2226,ct:true}]),
+          TR([{t:"5",w:500,ct:true},{t:"Бино (мавҷуд, дар ихтиёри соҳибкор)",w:4100},{t:"—",w:2200,ct:true},{t:"11 900 сом.",w:2226,ct:true}]),
+          TR([{t:"6",w:500,ct:true},{t:"Ашёи хом: матоъ, риш (захираи аввал)",w:4100},{t:"6 000 сом.",w:2200,ct:true},{t:"—",w:2226,ct:true}]),
+          TR([{t:"7",w:500,ct:true},{t:"Дигар хароҷотҳо",w:4100},{t:"3 000 сом.",w:2200,ct:true},{t:"—",w:2226,ct:true}]),
+          TR([{t:"",w:500},{t:"ҶАМЪ",w:4100,b:true},{t:"110 000 сом.",w:2200,ct:true},{t:"20 000 сом.",w:2226,ct:true}]),
+          TR([{t:"",w:500},{t:"БУҶЕТИ УМУМИИ ЛОИҲА",w:4100,b:true},{t:"130 000 сомонӣ",w:4426,ct:true}]),
+        ]}),
+        P("* Саҳми соҳибкор 15,4% — талаботи банди 19 Қоидаҳоро иҷро менамояд.",{i:true,cl:"666666"}),SP(),
+        H2("3.2. Пешбинии даромад"),
+        new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[3200,1942,1942,1942],rows:[
+          TR([{t:"Нишондиҳанда",w:3200},{t:"Соли 1",w:1942,ct:true},{t:"Соли 2",w:1942,ct:true},{t:"Соли 3",w:1942,ct:true}],true),
+          TR([{t:"Маҳсулот дар моҳ (дона)",w:3200},{t:"40–60",w:1942,ct:true},{t:"70–90",w:1942,ct:true},{t:"100–130",w:1942,ct:true}]),
+          TR([{t:"Даромади солона (сомонӣ)",w:3200},{t:"96–120 ҳаз.",w:1942,ct:true},{t:"175–250 ҳаз.",w:1942,ct:true},{t:"300–360 ҳаз.",w:1942,ct:true}]),
+          TR([{t:"Хароҷотҳои амалиётӣ",w:3200},{t:"60–80 ҳаз.",w:1942,ct:true},{t:"80–100 ҳаз.",w:1942,ct:true},{t:"100–130 ҳаз.",w:1942,ct:true}]),
+          TR([{t:"Фоидаи холис (сомонӣ)",w:3200},{t:"36–50 ҳаз.",w:1942,ct:true},{t:"70–90 ҳаз.",w:1942,ct:true},{t:"100–130 ҳаз.",w:1942,ct:true}]),
+        ]}),
+        P("Мӯҳлати барқарорсозии сармоягузорӣ: 18–24 моҳ.",{b:true}),SP(),PB(),
+
+        H1("4. ШУҒЛНОКӢ"),DV(),
+        P("Мутобиқи банди 17 Қоидаҳо (Қарори №420), барои гранти 110 000 сомонӣ — 7 ҷойи кории доимӣ ҳатмӣ аст:"),SP(),
+        new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[500,3300,1600,3626],rows:[
+          TR([{t:"№",w:500,ct:true},{t:"Вазифа",w:3300},{t:"Шумора",w:1600,ct:true},{t:"Категория",w:3626}],true),
+          TR([{t:"1",w:500,ct:true},{t:"Роҳбари сех / устои асосӣ",w:3300},{t:"1",w:1600,ct:true},{t:"Дархосткунанда",w:3626}]),
+          TR([{t:"2",w:500,ct:true},{t:"Оператори мошини юрмадӯзии автоматикӣ",w:3300},{t:"1",w:1600,ct:true},{t:"Занони 20–40-сола",w:3626}]),
+          TR([{t:"3",w:500,ct:true},{t:"Дӯзанда (мошини дарӯзӣ)",w:3300},{t:"2",w:1600,ct:true},{t:"Занони маъюб / ҳонашин",w:3626}]),
+          TR([{t:"4",w:500,ct:true},{t:"Аверлокчӣ / бурандоз",w:3300},{t:"1",w:1600,ct:true},{t:"Модарони сершумори фарзанд",w:3626}]),
+          TR([{t:"5",w:500,ct:true},{t:"Мудири фурӯш",w:3300},{t:"1",w:1600,ct:true},{t:"Занони ҷавон",w:3626}]),
+          TR([{t:"6",w:500,ct:true},{t:"Шогирд / таҷрибаомӯз",w:3300},{t:"1",w:1600,ct:true},{t:"Қишрҳои осебпазир",w:3626}]),
+          TR([{t:"",w:500},{t:"ҶАМЪ",w:3300,b:true},{t:"7",w:1600,ct:true},{t:"Ҳама — занон",w:3626}]),
+        ]}),
+        SP(),P("Дар давоми 2 сол на камтар аз 20 занро ба касбомӯзӣ ҷалб кардан нақша аст (банди 15 Қоидаҳо)."),SP(),
+
+        H1("5. МАКОН ВА НАҚШАИ ТАТБИҚ"),DV(),
+        P("Лоиҳа дар ш. Бободжон Ғафуров, маҳаллаи Исфисор, кӯчаи Мадания 44 амалӣ мегардад."),
+        BL("Масоҳат: 40–50 м² | Барқ, об, гармӣ: мавҷуд"),
+        BL("Бино дар ихтиёри соҳибкор мавҷуд аст (ҳуҷҷатҳо замима мегарданд)"),
+        BL("Соҳибкор дар ин маҳал на камтар аз 2 сол сокин аст (банди 28 Қоидаҳо)"),
+        SP(),
+        new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[1000,5626,2400],rows:[
+          TR([{t:"Моҳ",w:1000,ct:true},{t:"Чорабинӣ",w:5626},{t:"Масъул",w:2400}],true),
+          TR([{t:"1",w:1000,ct:true},{t:"Бақайдгирии ИП, кушодани ҳисоби бонкӣ",w:5626},{t:"Дархосткунанда",w:2400}]),
+          TR([{t:"1–2",w:1000,ct:true},{t:"Омодасозии ҷойи корӣ",w:5626},{t:"Дархосткунанда",w:2400}]),
+          TR([{t:"2–3",w:1000,ct:true},{t:"Харидорӣ ва расонидани мошини юрмадӯзӣ",w:5626},{t:"Таъминкунанда",w:2400}]),
+          TR([{t:"3",w:1000,ct:true},{t:"Насб, танзим, озмоиш",w:5626},{t:"Техник",w:2400}]),
+          TR([{t:"3–4",w:1000,ct:true},{t:"Қабул ва таълими 7 нафар кормандон",w:5626},{t:"Дархосткунанда",w:2400}]),
+          TR([{t:"4–5",w:1000,ct:true},{t:"Харидории ашёи хом, оғози истеҳсоли озмоишӣ",w:5626},{t:"Коллектив",w:2400}]),
+          TR([{t:"6+",w:1000,ct:true},{t:"Истеҳсол ва фурӯши пурра, шартномаҳо бо бозор",w:5626},{t:"Коллектив",w:2400}]),
+          TR([{t:"12–36",w:1000,ct:true},{t:"Рушди истеҳсол, пешниҳоди ҳисоботҳо",w:5626},{t:"Дархосткунанда",w:2400}]),
+        ]}),SP(),PB(),
+
+        H1("6. НАТИҶАҲО ВА ХУЛОСА"),DV(),
+        new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[5026,2000,2000],rows:[
+          TR([{t:"Нишондиҳанда",w:5026},{t:"Пас аз 1 сол",w:2000,ct:true},{t:"Пас аз 3 сол",w:2000,ct:true}],true),
+          TR([{t:"Ҷойҳои кории доимӣ (занон)",w:5026},{t:"7",w:2000,ct:true},{t:"10–12",w:2000,ct:true}]),
+          TR([{t:"Маҳсулоти истеҳсолшуда (дона/сол)",w:5026},{t:"600–700",w:2000,ct:true},{t:"1200–1500",w:2000,ct:true}]),
+          TR([{t:"Даромади умумии солона (сомонӣ)",w:5026},{t:"96–120 ҳаз.",w:2000,ct:true},{t:"300–360 ҳаз.",w:2000,ct:true}]),
+          TR([{t:"Занони ба касбомӯзӣ ҷалбшуда",w:5026},{t:"7",w:2000,ct:true},{t:"20+",w:2000,ct:true}]),
+        ]}),SP(),
+        BL("Нигоҳдорӣ ва рушди ҳунарҳои мардумии тоҷикӣ — атлас, адрас, чакандӯзӣ"),
+        BL("Бозгашти занони маъюб ва ҳонашин ба ҳаёти иқтисодии ҷомеа"),
+        BL("Баланд рафтани дараҷаи зиндагии хонаводаҳои корманд"),
+        SP(),
+        P("Лоиҳа ба ҳамаи меъёрҳои Барномаи грантҳои Президенти Ҷумҳурии Тоҷикистон барои солҳои 2025–2030 (Қарори №420 аз 28.07.2025) мувофиқат мекунад. Буҷети умумӣ: 130 000 сомонӣ, саҳми соҳибкор: 20 000 сомонӣ (15,4%). Мӯҳлати амалигардонӣ: 36 моҳ."),
+        DV(),SP(),
+        P("Дархосткунанда: ___________________________  /________________/"),
+        P("Санаи тартибдиҳӣ: «_____» _________________ соли 2026"),
+        P("РМА: _______________________________   Телефон: _______________________________"),
+        SP(),
+        P("Суроға: ш. Душанбе, хиёбони Лоҳутӣ 14  |  www.comwom.tj  |  (+992 37) 221-34-71"),
+      ]}]
+    });
+
+    const blob=await Packer.toBlob(doc);
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download='Sex_Duzandagi_Grant_2026.docx';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    msg.style.color='#065f46'; msg.textContent='✅ Зеркашӣ оғоз шуд!';
+    btn.disabled=false;
+  }catch(e){
+    msg.style.color='red'; msg.textContent='Хато: '+e.message;
+    btn.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
+
