@@ -10,7 +10,7 @@
 body{font-family:Georgia,serif;background:linear-gradient(160deg,#0a1628,#1a3a5c,#0d2137);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{background:#fff;border-radius:16px;padding:36px 30px;max-width:500px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.5)}
 .top{text-align:center;margin-bottom:24px}
-.badge{display:inline-block;background:linear-gradient(135deg,#1A3A5C,#2874A6);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:12px}
+.badge{display:inline-block;background:linear-gradient(135deg,#1A3A5C,#2874A6);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:8px}
 h1{font-size:21px;color:#1A3A5C;line-height:1.3;margin-bottom:6px}
 .sub{font-size:12px;color:#888;line-height:1.6}
 .rows{display:grid;gap:8px;margin:20px 0}
@@ -18,7 +18,7 @@ h1{font-size:21px;color:#1A3A5C;line-height:1.3;margin-bottom:6px}
 .lbl{font-size:10px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .val{font-size:13px;color:#1A3A5C;font-weight:700}
 .sep{height:1px;background:linear-gradient(90deg,transparent,#D4A017,transparent);opacity:.4;margin:18px 0}
-.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:linear-gradient(135deg,#1A3A5C,#2874A6);color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(26,58,92,.4);transition:transform .15s}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:linear-gradient(135deg,#1A3A5C,#2874A6);color:#fff;border:none;border-radius:11px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s}
 .btn:hover{transform:translateY(-2px)}
 .btn:disabled{opacity:.6;cursor:wait}
 #msg{text-align:center;margin-top:12px;font-size:13px;min-height:20px}
@@ -48,6 +48,14 @@ h1{font-size:21px;color:#1A3A5C;line-height:1.3;margin-bottom:6px}
 <script>
 async function go(){
   const btn=document.getElementById('btn'),msg=document.getElementById('msg');
+  
+  // Проверка загрузки библиотеки docx
+  if(typeof docx==='undefined'){
+    msg.style.color='red';
+    msg.textContent='Хато: Библиотека docx боз ғалат нашудаост. Аз нав кӯшиш кунед.';
+    return;
+  }
+  
   btn.disabled=true; msg.style.color='#2874A6'; msg.textContent='⏳ Омода мешавад...';
   try{
     const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
@@ -84,11 +92,11 @@ async function go(){
       children:[
         SP(),SP(),SP(),
         new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},children:[new TextRun({text:"ҶУМҲУРИИ ТОҶИКИСТОН",size:24,bold:true,font:F,color:"444444"})]}),
-        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:10,after:10},children:[new TextRun({text:"Кумитаи кор бо занон ва оилаи назди Ҳукумати Ҷумҳурии Тоҷикистон",size:22,font:F,color:"555555",italics:true})]}),
-        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:10,after:50},children:[new TextRun({text:"Озмуни грантҳои Президент барои солҳои 2025–2030",size:22,font:F,color:"555555",italics:true})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:10,after:10},children:[new TextRun({text:"Кумитаи кор бо занон ва оилаи назди Ҳукумати Ҷумҳурии Тоҷикистон",size:22,font:F,color:"333333"})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:10,after:50},children:[new TextRun({text:"Озмуни грантҳои Президент барои солҳои 2025–2030",size:22,font:F,color:"333333"})]}),
         DV(),SP(),
         new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:60,after:30},children:[new TextRun({text:"НАҚШАИ ТИҶОРАТӢ",size:56,bold:true,font:F,color:"1A5276"})]}),
-        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:20,after:20},children:[new TextRun({text:"«Сехи дӯзандагӣ ва истеҳсоли либоси миллии тоҷикӣ»",size:30,bold:true,font:F,color:"154360"})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:20,after:20},children:[new TextRun({text:"«Сехи дӯзандагӣ ва истеҳсоли либоси миллии тоҷикӣ»",size:26,bold:true,font:F,color:"1A5276"})]}),
         SP(),SP(),
         new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[3600,5426],rows:[
           IR("Дархосткунанда:","[Насабу ном, исми падар]"),
@@ -106,11 +114,11 @@ async function go(){
 
         H1("1. МАЪЛУМОТИ УМУМӢ"),DV(),
         H2("1.1. Номи лоиҳа"),
-        P("«Кушодани сехи дӯзандагӣ ва истеҳсоли либоси миллии тоҷикӣ дар асоси харидории мошини юрмадӯзии автоматикӣ»"),SP(),
+        P("«Кушодани сехи дӯзандагӣ ва истеҳсоли либоси миллии тоҷикӣ дар асоси харидории мошини юрмадӯзии автоматикӣ»"),
         H2("1.2. Тавсиф ва асосноккунӣ"),
-        P("Лоиҳа ташкили корхонаи хурди истеҳсолиро дар ш. Бободжон Ғафуров пешбинӣ менамояд. Дар сех либоси миллии тоҷикӣ — атлас, адрас, чакан, либоси бозорӣ, куртаҳои миллӣ ва костюмҳои юрмадӯзӣ истеҳсол карда мешавад. Маҳсулот мизоҷи доимӣ дорад: соҳибкорони бозор шартнома доранд ва маҳсулоти тайёрро якҷоят фурӯхта метавонанд."),SP(),
+        P("Лоиҳа ташкили корхонаи хурди истеҳсолиро дар ш. Бободжон Ғафуров пешбинӣ менамояд. Дар сех либоси миллӣ ва модерни тоҷикӣ дӯхта мешавад: атлас, адрас, чакан, куртаҳо, костюм ва либоси фармоишӣ."),
         H2("1.3. Мақсад ва вазифаҳо"),
-        P("Мақсади асосӣ: ба кори доимӣ машғул будани занони маъюб ва ҳонашин ва пеш бурдани ҳунарҳои мардумии миллати Тоҷик."),
+        P("Мақсади асосӣ: ба кори доимӣ машғул будани занони маъюб ва ҳонашин ва пеш бурдани ҳунарҳои мардумии тоҷикӣ."),
         BL("Истеҳсоли атлас, адрас, чакан, либоси бозорӣ, куртаҳои миллӣ ва костюмҳои юрмадӯзӣ"),
         BL("Ба кор таъмин намудани занони маъюб ва хонашин"),
         BL("Таъмини фурӯши доимӣ тавассути шартномаҳо бо соҳибкорони бозор"),
@@ -138,7 +146,7 @@ async function go(){
           TR([{t:"№",w:500,ct:true},{t:"Номгӯи хароҷотҳо",w:4100},{t:"Маблағи пурсидашуда",w:2200,ct:true},{t:"Саҳми соҳибкор",w:2226,ct:true}],true),
           TR([{t:"1",w:500,ct:true},{t:"Мошини юрмадӯзии автоматикӣ (9 300 USD)",w:4100},{t:"101 000 сом.",w:2200,ct:true},{t:"—",w:2226,ct:true}]),
           TR([{t:"2",w:500,ct:true},{t:"Мошини дарӯзӣ (2 дона × 800 сом.)",w:4100},{t:"—",w:2200,ct:true},{t:"1 600 сом.",w:2226,ct:true}]),
-          TR([{t:"3",w:500,ct:true},{t:"Мошини аверлок",w:4100},{t:"—",w:2200,ct:true},{t:"4 500 сом.",w:2226,ct:true}]),
+          TR([{t:"3",w:500,ct:true},{t:"Мошини аверло��",w:4100},{t:"—",w:2200,ct:true},{t:"4 500 сом.",w:2226,ct:true}]),
           TR([{t:"4",w:500,ct:true},{t:"Стол ва чизҳои ёрирасон",w:4100},{t:"—",w:2200,ct:true},{t:"2 000 сом.",w:2226,ct:true}]),
           TR([{t:"5",w:500,ct:true},{t:"Бино (мавҷуд, дар ихтиёри соҳибкор)",w:4100},{t:"—",w:2200,ct:true},{t:"11 900 сом.",w:2226,ct:true}]),
           TR([{t:"6",w:500,ct:true},{t:"Ашёи хом: матоъ, риш (захираи аввал)",w:4100},{t:"6 000 сом.",w:2200,ct:true},{t:"—",w:2226,ct:true}]),
@@ -146,7 +154,7 @@ async function go(){
           TR([{t:"",w:500},{t:"ҶАМЪ",w:4100,b:true},{t:"110 000 сом.",w:2200,ct:true},{t:"20 000 сом.",w:2226,ct:true}]),
           TR([{t:"",w:500},{t:"БУҶЕТИ УМУМИИ ЛОИҲА",w:4100,b:true},{t:"130 000 сомонӣ",w:4426,ct:true}]),
         ]}),
-        P("* Саҳми соҳибкор 15,4% — талаботи банди 19 Қоидаҳоро иҷро менамояд.",{i:true,cl:"666666"}),SP(),
+        P("* Саҳми соҳибкор 15,4% — талаботи банди 19 Қоидаҳоро иҷро менамояд.",{i:true}),SP(),
         H2("3.2. Пешбинии даромад"),
         new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[3200,1942,1942,1942],rows:[
           TR([{t:"Нишондиҳанда",w:3200},{t:"Соли 1",w:1942,ct:true},{t:"Соли 2",w:1942,ct:true},{t:"Соли 3",w:1942,ct:true}],true),
@@ -201,7 +209,7 @@ async function go(){
         BL("Бозгашти занони маъюб ва ҳонашин ба ҳаёти иқтисодии ҷомеа"),
         BL("Баланд рафтани дараҷаи зиндагии хонаводаҳои корманд"),
         SP(),
-        P("Лоиҳа ба ҳамаи меъёрҳои Барномаи грантҳои Президенти Ҷумҳурии Тоҷикистон барои солҳои 2025–2030 (Қарори №420 аз 28.07.2025) мувофиқат мекунад. Буҷети умумӣ: 130 000 сомонӣ, саҳми соҳибкор: 20 000 сомонӣ (15,4%). Мӯҳлати амалигардонӣ: 36 моҳ."),
+        P("Лоиҳа ба ҳамаи меъёрҳои Барномаи грантҳои Президенти Ҷумҳурии Тоҷикистон барои солҳои 2025–2030 (Қарори №420) мувофиқ аст."),
         DV(),SP(),
         P("Дархосткунанда: ___________________________  /________________/"),
         P("Санаи тартибдиҳӣ: «_____» _________________ соли 2026"),
@@ -227,4 +235,3 @@ async function go(){
 </script>
 </body>
 </html>
-
